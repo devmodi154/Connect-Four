@@ -1,15 +1,12 @@
-// H2 and H3 problem after restart
-// DRAW CONDITION CHECK
-
-
 var restart=document.querySelector("#b")
 
 var player1= prompt("Player One:Enter your Name,you will be blue");
 var player1Color='rgb(86,151,255)';
+var player1_wins=0
 
 var player2= prompt("Player Two:Enter your Name,you will be red");
 var player2Color='rgb(237,45,73)';
-
+var player2_wins=0
 
 var game_on= true;
 var table = $('table tr');
@@ -119,17 +116,23 @@ function diagonalWinCheck()
 
 function drawCheck()
 {
+	var count=0;
 	for(var i=0;i<7;i++)
 	{
-		for(var j=0;j<6;j++)
+		for(var j=0;j<7;j++)
 		{
 			if(returnColor(i,j)==='rgb(128, 128, 128)')
 			{
-				return false;
+				count++;
 			}
 		}
 	}
-	return true;
+	if(count===0)
+	{
+		console.log(count);
+		return true;
+	}
+	return false;
 }
 
 
@@ -144,16 +147,19 @@ function clearBoard(){
 	
 	$('.board button').css('background-color','rgb(128, 128, 128)');
 	$('#b').css('visibility','hidden');
-	player1= prompt("Player One:Enter your Name,you will be blue");
-	player1Color='rgb(86,151,255)';
+	// player1= prompt("Player One:Enter your Name,you will be blue");
+	// player1Color='rgb(86,151,255)';
 
-	player2= prompt("Player Two:Enter your Name,you will be red");
-	player2Color='rgb(237,45,73)';
-	$('h1').text('Welcome to Connect Four');
-
+	// player2= prompt("Player Two:Enter your Name,you will be red");
+	// player2Color='rgb(237,45,73)';
+	$('h1').text(player1+":"+player1_wins+" | "+player2+":"+player2_wins);
 	$('h2').text('Connect 4 chips to win!');
 	$('h3').text("Let's Start");
+	console.log("Q");
 	game_on=true;
+	currentPlayer = 1;
+	currentName = player1;
+	currentColor = player1Color;
 
 }
 
@@ -170,35 +176,45 @@ $('.board button').on('click',function(){
 		if(horizontalWinCheck() || verticalWinCheck() || diagonalWinCheck())
 		{
 			$('h1').text(currentName+" You have won!");
-			$('h2').fadeOut('fast');
-			$('h3').fadeOut('fast');
+			$('h2').text('');
+			$('h3').text('');
 			$('#b').css('visibility','visible');
+
+			if(player1===currentName)
+			{
+				player1_wins++;
+			}
+			else
+			{
+				player2_wins++;
+			}
 			game_on=false;
 		}
 		else
-			if(drawCheck)
+			if(drawCheck())
 			{
 				$('h1').text("Game Draw!");
-				$('h2').fadeOut('fast');
-				$('h3').fadeOut('fast');
+				$('h2').text('');
+				$('h3').text('');
 				$('#b').css('visibility','visible');
 				game_on=false;
 			}
 
 		currentPlayer = currentPlayer*-1;
 
-		if(currentPlayer === 1)
+		if(currentPlayer === 1 && game_on)
 		{
 			currentName = player1;
 			$('h3').text(currentName+" it is your turn.");
 			currentColor = player1Color;
 		}
 		else
-		{
-			currentName = player2;
-			$('h3').text(currentName+" it is your turn.");	
-			currentColor = player2Color;
-		}
+			if(game_on)
+			{
+				currentName = player2;
+				$('h3').text(currentName+" it is your turn.");	
+				currentColor = player2Color;
+			}
 
 	}
 })
