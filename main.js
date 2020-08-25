@@ -163,14 +163,6 @@ function clearBoard(){
 restart.addEventListener('click',clearBoard);
 
 function resultCheck(col) {
-	if(currentColor === 'rgb(86,151,255)') {
-		blue.style.backgroundColor = 'rgb(128,128,128)';
-		red.style.backgroundColor = 'rgb(237,45,73)';
-	} else {
-		red.style.backgroundColor = 'rgb(128,128,128)';
-		blue.style.backgroundColor = 'rgb(86,151,255)';
-	}
-
 	var bottomAvail = checkBottom(col);
 	changeColor(bottomAvail,col,currentColor);
 	if(horizontalWinCheck() || verticalWinCheck() || diagonalWinCheck())
@@ -195,15 +187,24 @@ function resultCheck(col) {
 	}
 }
 
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-$('.board button').on('click',function(){
 
-	if(game_on==true)
+$('.board button').on('click',async function(){
+
+	if(game_on)
 	{
+		blue.style.backgroundColor = 'rgb(128,128,128)';
+		red.style.backgroundColor = 'rgb(237,45,73)';
 		var col = $(this).closest('td').index();
 		resultCheck(col, currentColor);
-		if( game_on )
+		if(game_on)
 		{
+			await sleep(500);
+			red.style.backgroundColor = 'rgb(128,128,128)';
+			blue.style.backgroundColor = 'rgb(86,151,255)';
 			currentName = player2;
 			currentColor = player2Color;
 			var choice = [col-1,col,col+1];
@@ -212,6 +213,6 @@ $('.board button').on('click',function(){
 			currentColor = player1Color;
 			currentName = player1;
 		}
-
+		
 	}
 })
